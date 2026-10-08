@@ -60,9 +60,9 @@ function Home({ isClosed, setIsClosed }) {
           </div>
 
         </div>
-
+        
       </header>
-
+      {/* main content */}
       <main className="dashboard-content">
 
       </main>

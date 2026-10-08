@@ -53,7 +53,7 @@ function Sidebar({ isClosed }) {
         </span>
       </a>
 
-      <a href="#">
+      <a href="/pharmacy">
         <span>
           <i className="fa-solid fa-capsules"></i>
           Find Pharmacy

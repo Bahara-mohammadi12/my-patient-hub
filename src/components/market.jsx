@@ -2,6 +2,7 @@ import { useState } from "react";
 function Market({ isClosed, setIsClosed }) {
 
     const [search, setSearch] = useState("");
+    const [tableSearch, setTableSearch] = useState("");
     const products = [
         {
             name: "Food Panda",
@@ -35,6 +36,10 @@ function Market({ isClosed, setIsClosed }) {
 
     const filteredProducts = products.filter((products) =>
     products.name.toLowerCase().includes(search.toLowerCase()));
+
+    const filteredTableProducts = products.filter((product) => 
+    product.name.toLowerCase().includes(tableSearch.toLowerCase()) ||
+    product.category.toLowerCase().includes(tableSearch.toLowerCase()));
 
     return (
         <section className={`market-page ${isClosed ? "sidebar-closed" : ""}`}>
@@ -109,7 +114,10 @@ function Market({ isClosed, setIsClosed }) {
                         <option>20</option>
                     </select>
                     <span>entries per page</span>
-                    <input type="text" placeholder="search..." />
+                    <input type="text" 
+                    placeholder="search..."
+                    value={tableSearch}
+                    onChange={(e) => setTableSearch(e.target.value)} />
                 </div>
 
                 {/* table */}
@@ -122,7 +130,7 @@ function Market({ isClosed, setIsClosed }) {
                         <span>PRICE</span>
                         <span>ID</span>
                     </div>
-                    {filteredProducts.map((product,index) => (
+                    {filteredTableProducts.map((product,index) => (
                         <div className="table-row" key={index}>
                             <div className="table-name">
                                 <img src={product.image} alt={product.name} />
