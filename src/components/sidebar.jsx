@@ -60,7 +60,7 @@ function Sidebar({ isClosed }) {
         </span>
       </a>
 
-      <a href="#">
+      <a href="/dependent">
         <span>
           <i className="fa-solid fa-book"></i>
           My Dependents
