@@ -74,7 +74,7 @@ function Sidebar({ isClosed }) {
         </span>
       </a>
 
-      <a href="#">
+      <a href="/setting">
         <span>
           <i className="fa-solid fa-gear"></i>
           Setting
