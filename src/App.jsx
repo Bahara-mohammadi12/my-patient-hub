@@ -13,6 +13,7 @@ import Login from "./components/login.jsx";
 import Pharmacy from './components/pharmacy.jsx';
 import Dependent from './components/dependent.jsx';
 import Setting from './components/setting.jsx';
+import  Dashboard from './components/dashboard.jsx';
 function App() {
   const [isClosed, setIsClosed] = useState(false);
 
@@ -23,6 +24,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<><Sidebar isClosed={isClosed} /><Home isClosed={isClosed} setIsClosed={setIsClosed} /></> }/>
+        <Route path="/dashboard" element={<><Sidebar isClosed={isClosed} /><Dashboard isClosed={isClosed} setIsClosed={setIsClosed} /></>} />
+
         <Route path="/doctor" element={<><Sidebar isClosed={isClosed} /><Doctor isClosed={isClosed} setIsClosed={setIsClosed} /></>} />
         <Route path="/clinic" element={<><Sidebar isClosed={isClosed} /><Clinic  isClosed={isClosed} setIsClosed={setIsClosed}/></>} />
         <Route path="/market" element={<><Sidebar isClosed={isClosed} /><Market isClosed={isClosed} setIsClosed={setIsClosed} /></>} />
