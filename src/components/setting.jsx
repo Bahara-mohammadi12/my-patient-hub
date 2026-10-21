@@ -1,21 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useApp } from "../context/useApp.js";
 import "./setting.css";
 
 function Setting({ isClosed, setIsClosed }) {
+  const { user, setUser, signOut } = useApp();
+  const navigate = useNavigate();
   const [profileVisible, setProfileVisible] = useState(true);
   const [activeSection, setActiveSection] = useState("basic-info");
   const [passwordMessage, setPasswordMessage] = useState("");
 
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
+    firstName: user?.fullName?.split(" ")[0] || "",
+    lastName: user?.fullName?.split(" ").slice(1).join(" ") || "",
     gender: "",
     birthDate: "",
-    email: "",
+    email: user?.email || "",
     bloodGroup: "",
-    phone: "",
-    address: "",
+    phone: user?.phone || "",
+    address: user?.address || "Kabul, Afghanistan",
   });
 
   const [passwords, setPasswords] = useState({
@@ -24,9 +27,9 @@ function Setting({ isClosed, setIsClosed }) {
     confirmPassword: "",
   });
 
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [twoFactorEnabled] = useState(true);
 
-  const [sessions, setSessions] = useState([
+  const [sessions] = useState([
     {
       id: 1,
       device: "Bucharest 68.133.163.201",
@@ -72,7 +75,8 @@ function Setting({ isClosed, setIsClosed }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert("Your information has been saved!");
+    setUser((previous) => ({ ...previous, fullName: `${form.firstName} ${form.lastName}`.trim(), email: form.email, phone: form.phone, address: form.address }));
+    setPasswordMessage("Your profile information has been saved in this browser.");
   };
 
   const handlePasswordSubmit = (event) => {
@@ -159,7 +163,7 @@ function Setting({ isClosed, setIsClosed }) {
           <button
             type="button"
             className="setting-logout"
-            onClick={() => alert("Connect your logout logic here.")}>
+            onClick={() => { signOut(); navigate("/login"); }}>
             <i className="fa-solid fa-circle-user"></i>
             <span>Log out</span>
           </button>

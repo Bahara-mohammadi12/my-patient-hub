@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Dependent({ isClosed, setIsClosed }) {
 
@@ -20,9 +20,10 @@ function Dependent({ isClosed, setIsClosed }) {
     plan: ""
     });
 
-    const [submitted, setSubmitted] = useState(false);
 
-    const [dependents, setDependents] = useState([]);
+    const [dependents, setDependents] = useState(() => { try { return JSON.parse(localStorage.getItem("mphDependents") || "[]"); } catch { return []; } });
+
+    useEffect(() => { localStorage.setItem("mphDependents", JSON.stringify(dependents)); }, [dependents]);
 
     const [message, setMessage] = useState("");
 
@@ -67,7 +68,6 @@ function Dependent({ isClosed, setIsClosed }) {
     }
 
     setDependents((prev) => [...prev, dependent]);
-    setSubmitted(true);
     setMessage("Dependent registered successfully!");
     }; 
 
@@ -229,7 +229,7 @@ function Dependent({ isClosed, setIsClosed }) {
                                     <div className="birth-date">
 
                                        <input type="date"
-                                       name="dirthDate"
+                                       name="birthDate"
                                        placeholder="Birth date"
                                        value={dependent.birthDate}
                                        onChange={updateDependent} />

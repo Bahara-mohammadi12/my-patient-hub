@@ -1,40 +1,96 @@
-import { useState } from "react";
-function Clinic({ isClosed, setIsClosed}) {
 
+import { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Fix Leaflet marker icons in Vite
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+// Demo clinic data. Coordinates are approximate examples.
+const clinics = [
+  {
+    id: 1,
+    name: "City Medical Center",
+    location: "Kabul, Afghanistan",
+    type: "General & Specialist Clinic",
+    doctors: "Experienced Medical Professionals",
+    hours: "8:00 AM - 8:00 PM",
+    specialty: "cardiologist",
+    image: "/clinic1.jpg",
+    position: [34.528, 69.172],
+  },
+  {
+    id: 2,
+    name: "Kateb Medical Center",
+    location: "Kabul, Afghanistan",
+    type: "General & Specialist Clinic",
+    doctors: "Experienced Medical Professionals",
+    hours: "8:00 AM - 8:00 PM",
+    specialty: "dermatologist",
+    image: "/clinic2.jpg",
+    position: [34.486, 69.134],
+  },
+];
+
+// Automatically adjust map to the filtered clinics.
+function FitMapToResults({ items }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!items.length) return;
+
+    if (items.length === 1) {
+      map.setView(items[0].position, 15);
+      return;
+    }
+
+    const bounds = L.latLngBounds(
+      items.map((item) => item.position)
+    );
+
+    map.fitBounds(bounds, {
+      padding: [40, 40],
+      maxZoom: 14,
+    });
+  }, [items, map]);
+
+  return null;
+}
+
+function Clinic({ isClosed, setIsClosed }) {
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [specialty, setSpecialty] = useState("all");
   const [view, setView] = useState("list");
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  const clinic = [
-    {
-      name: "City Medical Center",
-      location: "Kabul Afghanistan",
-      type: "General & Specialist Clinic",
-      doctors: "Experienced Medical Professionals",
-      hours: "8:00 AM - 8:00 PM",
-      specialty: "cardiologist",
-      image: "/clinic1.jpg"
-    },
-    {
-      name: "Kateb Medical Center",
-      location: "Kabul Afghanistan",
-      type: "General & Specialist Clinic",
-      doctors: "Experienced Medical Professionals",
-      hours: "8:00 AM - 8:00 PM",
-      specialty: "dermatologist",
-      image: "/clinic2.jpg"
-    }
-  ];
-
-  const filteredClinics = clinic.filter((clinic) => {
+  const filteredClinics = clinics.filter((clinic) => {
+    const searchText = search.trim().toLowerCase();
+    const locationText = location.trim().toLowerCase();
 
     const searchMatch =
-      clinic.name.toLowerCase().includes(search.toLowerCase());
+      !searchText ||
+      `${clinic.name} ${clinic.type} ${clinic.specialty} ${clinic.location}`
+        .toLowerCase()
+        .includes(searchText);
 
     const locationMatch =
-      clinic.location.toLowerCase().includes(location.toLowerCase());
+      !locationText ||
+      clinic.location.toLowerCase().includes(locationText);
 
     const specialtyMatch =
       specialty === "all" || clinic.specialty === specialty;
@@ -42,235 +98,260 @@ function Clinic({ isClosed, setIsClosed}) {
     return searchMatch && locationMatch && specialtyMatch;
   });
 
-
   return (
-    <section className={`find-clinic ${isClosed ? "sidebar-closed" :""}`}>
-
-      {/* Clinic Banner */}
+    <section
+      className={`find-clinic ${isClosed ? "sidebar-closed" : ""}`}
+    >
       <div className="clinic-banner">
-
         <div className="clinic-top">
-
-          {/* Page Title */}
           <div className="page-title">
             <a href="/">
-              <i className="fa-solid fa-house"></i>
+              <i className="fa-solid fa-house" />
             </a>
 
             <div>
-              <small>/ Dashboard</small>
-              <h3>Dashboard</h3>
+              <small>/ Find Clinic</small>
+              <h3>Find a Clinic</h3>
             </div>
           </div>
 
-          {/* Menu Button */}
-          <button id="menuBtn" 
-          className="menu-btn"
-          onClick={() => setIsClosed(!isClosed)}>
-            <i className="fa-solid fa-bars"></i>
+          <button
+            type="button"
+            className="menu-btn"
+            onClick={() => setIsClosed(!isClosed)}
+            aria-label="Toggle sidebar"
+          >
+            <i className="fa-solid fa-bars" />
           </button>
 
-          {/* Right Side */}
           <div className="header-right">
-
-            {/* Search */}
             <div className="search-box">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="doctor-search" placeholder="Search..."
-              value={search} onChange={(e) => setSearch(e.target.value)} />
+              <i className="fa-solid fa-magnifying-glass" />
+              <input
+                type="search"
+                placeholder="Search clinics..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
             </div>
 
-            {/* Notification */}
-            <button className="header-icon">
-              <i className="fa-solid fa-bell"></i>
+            <button
+              type="button"
+              className="header-icon"
+              aria-label="Notifications"
+            >
+              <i className="fa-solid fa-bell" />
             </button>
 
-            {/* Settings */}
-            <button className="header-icon">
-              <i className="fa-solid fa-gear"></i>
+            <button
+              type="button"
+              className="header-icon"
+              aria-label="Settings"
+            >
+              <i className="fa-solid fa-gear" />
             </button>
 
-            {/* Profile */}
             <div className="profile">
               <div className="profile-img">
-                <i className="fa-solid fa-circle-user"></i>
+                <i className="fa-solid fa-circle-user" />
               </div>
-
               <div>
                 <strong>My Account</strong>
                 <small>Welcome</small>
               </div>
             </div>
-
           </div>
         </div>
 
-        {/* Clinic Title */}
         <h1>Find a Clinic</h1>
-        <p>Search clinics and schedule an appointment through Clinic</p>
+        <p>
+          Find healthcare centers and view their locations on the map.
+        </p>
 
-        {/* Search Area */}
         <div className="search-area">
-
           <input
-            type="text"
-            id="doctor-search"
-            placeholder="Search..."
+            type="search"
+            placeholder="Search by clinic name or type"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
           />
 
           <input
             type="text"
-            id="locationserch"
-            placeholder="Enter location or hospital"
+            placeholder="Enter city or location"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(event) => setLocation(event.target.value)}
           />
 
-          <button id="searchBtn">
+          <button
+            type="button"
+            onClick={() => setView("list")}
+          >
             Search
           </button>
-
         </div>
       </div>
 
-      {/* List / Map Button */}
       <div className="view-button">
-        <button id="listBtn" className={view === "list" ? "active" : ""}
-        onClick={() => setView("list")}>
+        <button
+          type="button"
+          className={view === "list" ? "active" : ""}
+          onClick={() => setView("list")}
+        >
           List
         </button>
 
-        <button id="mapBtn"
-        className={view === "map" ? "active" : ""}
-        onClick={() => setView("map")}>
-          Map
+        <button
+          type="button"
+          className={view === "map" ? "active" : ""}
+          onClick={() => setView("map")}
+        >
+          Map ({filteredClinics.length})
         </button>
       </div>
 
-      {/* Main Clinic Area */}
       <div className="clinic-content">
-
-        {/* Left Filter */}
         <aside className="clinic-filter">
-
           <h3>Filter By</h3>
 
-          <select id="specialtyFilter"
-          value={specialty}
-          onChange={(e) => setSpecialty(e.target.value)}>
-            <option value="all">Specialties</option>
+          <select
+            value={specialty}
+            onChange={(event) => setSpecialty(event.target.value)}
+          >
+            <option value="all">All Specialties</option>
             <option value="cardiologist">Cardiologist</option>
             <option value="dermatologist">Dermatologist</option>
           </select>
 
-          <select>
-            <option>Gender</option>
-            <option>Male</option>
-            <option>Female</option>
-          </select>
+          <p className="clinic-result-count">
+            {filteredClinics.length} clinic(s) found
+          </p>
 
-          <select>
-            <option>Condition</option>
-            <option>Emergency</option>
-            <option>Family doctor</option>
-          </select>
-
-          <select>
-            <option>Language</option>
-            <option>English</option>
-            <option>Dari</option>
-            <option>Pashto</option>
-          </select>
-
-          <h3>Provider Who Treat</h3>
-
-          <label className="check-label">
-            <input type="checkbox" />
-            All Ages
-          </label>
-
-          <label className="check-label">
-            <input type="checkbox" />
-            Children
-          </label>
-
-          <label className="check-label">
-            <input type="checkbox" />
-            Adults
-          </label>
-
-          <h3>View Only</h3>
-
-          <label className="check-label">
-            <input type="checkbox" />
-            Online schedule
-          </label>
-
-          <label className="check-label">
-            <input type="checkbox" />
-            Primary Care
-          </label>
-
+          <p className="clinic-filter-note">
+            Search and specialty filters update both the list and the map.
+          </p>
         </aside>
 
-        {/* Right Side */}
         <div className="clinic-result">
           {view === "list" && (
+            <div id="listView">
+              {filteredClinics.map((clinic) => (
+                <article className="clinic-card" key={clinic.id}>
+                  <img
+                    src={clinic.image}
+                    alt={clinic.name}
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
+                    }}
+                  />
 
-          <div id="listView">
-            {filteredClinics.map((clinic, index) => (
+                  <div className="clinic-details">
+                    <h2>{clinic.name}</h2>
 
-            <div className="clinic-card" key={index}>
+                    <p>
+                      <i className="fa-solid fa-location-dot" />{" "}
+                      {clinic.location}
+                    </p>
 
-              <img
-                src={clinic.image}
-                alt={clinic.name}
-              />
+                    <p>Type: {clinic.type}</p>
+                    <p>Specialty: {clinic.specialty}</p>
+                    <p>Doctors: {clinic.doctors}</p>
+                    <p>Opening hours: {clinic.hours}</p>
 
-              <div className="clinic-details">
+                    <button
+                      type="button"
+                      className="clinic-show-map"
+                      onClick={() => setView("map")}
+                    >
+                      <i className="fa-solid fa-map-location-dot" />{" "}
+                      Show on map
+                    </button>
+                  </div>
 
-                <h2>{clinic.name}</h2>
+                  <div className="clinic-action">
+                    <a href="/doctor">
+                      Find a Doctor &amp; Schedule
+                    </a>
+                  </div>
+                </article>
+              ))}
 
-                <p>{clinic.location}</p>
-
-                <p>Type: {clinic.type}</p>
-
-                <p>Doctors: {clinic.doctors}</p>
-
-                <p>Opening hours: {clinic.hours}</p>
-
-              </div>
-
-              <div className="clinic-action">
-                <a href="/doctor">
-                  Find a Doctor & schedule
-                </a>
-              </div>
-
-            </div>
-            ))}
-            
-            {filteredClinics.length === 0 && (
-              <p>No clinic found</p>
-            )}
+              {filteredClinics.length === 0 && (
+                <p className="clinic-empty">
+                  No clinics match your search. Try another name or location.
+                </p>
+              )}
             </div>
           )}
-            {view === "map" && (
-              <div id="mapView">
-                <h2>Clinic Location</h2>
-            
 
-            <iframe
-              src="https://www.google.com/maps?q=Kabul+Afghanistan&output=embed"
-              title="Clinic Location"
-              loading="lazy"
-            ></iframe>
+          {view === "map" && (
+            <div id="mapView">
+              <div className="clinic-map-heading">
+                <div>
+                  <h2>Clinic Locations</h2>
+                  <p>
+                    {filteredClinics.length} matching clinic(s) on the map
+                  </p>
+                </div>
 
-          </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setLocation("");
+                    setSpecialty("all");
+                  }}
+                >
+                  Clear filters
+                </button>
+              </div>
+
+              {filteredClinics.length > 0 ? (
+                <MapContainer
+                  center={[34.525, 69.17]}
+                  zoom={12}
+                  scrollWheelZoom={true}
+                  className="clinic-leaflet-map"
+                  style={{
+                    width: "100%",
+                    height: "460px",
+                    minHeight: "350px",
+                  }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+
+                  <FitMapToResults items={filteredClinics} />
+
+                  {filteredClinics.map((clinic) => (
+                    <Marker
+                      key={clinic.id}
+                      position={clinic.position}
+                    >
+                      <Popup>
+                        <div className="clinic-map-popup">
+                          <strong>{clinic.name}</strong>
+                          <p>{clinic.location}</p>
+                          <p>{clinic.type}</p>
+                          <p>Specialty: {clinic.specialty}</p>
+                          <p>Hours: {clinic.hours}</p>
+                          <a href="/doctor">Find a doctor</a>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+              ) : (
+                <p className="clinic-empty">
+                  No clinics match your search, so there are no markers to show.
+                </p>
+              )}
+            </div>
           )}
         </div>
       </div>
-
     </section>
   );
 }

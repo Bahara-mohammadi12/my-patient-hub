@@ -1,73 +1,40 @@
-import { Link } from "react-router-dom";
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useApp } from '../context/useApp.js';
+import './home.css';
+
+const services = [
+  { id: 'doctors', label: 'Available Doctors', value: '24', change: 'Find your specialist', icon: 'fa-user-doctor', tone: 'violet', bars: [35,52,44,66,55,78,68], to: '/doctor', terms: 'doctor specialist cardiologist dermatologist ahmad rahimi ali mohammadi maryam safi'  },
+  { id: 'clinics', label: 'Partner Clinics', value: '12', change: 'Care near you', icon: 'fa-house-medical', tone: 'blue', bars: [42,38,56,48,69,62,82], to: '/clinic', terms: 'clinic hospital medical center city medical center kateb medical center kabul'  },
+  { id: 'pharmacies', label: 'Pharmacies', value: '18', change: 'Browse medicines', icon: 'fa-capsules', tone: 'mint', bars: [28,46,39,61,54,73,84], to: '/pharmacy', terms: 'pharmacy medicine medication wellness first aid personal care hamza pharma'  },
+  { id: 'appointments', label: 'Appointments', value: 'My visits', change: 'Upcoming and past', icon: 'fa-calendar-check', tone: 'orange', to: '/appointments', terms: 'appointment booking visits doctor' },
+  { id: 'health', label: 'Health overview', value: 'Your care', change: 'Keep things organized', icon: 'fa-heart-pulse', tone: 'rose', to: '/account', terms: 'health account profile wellness' },
+  { id: 'market', label: 'Marketplace', value: 'Shop local', change: 'Everyday essentials', icon: 'fa-store', tone: 'violet', to: '/market', terms: 'marketplace food grocery restaurant fresh fruit basket afghan family meal daily essentials breakfast selection'  },
+  { id: 'chat', label: 'Messages', value: 'Stay connected', change: 'Open your conversations', icon: 'fa-comments', tone: 'blue', to: '/chat', terms: 'chat messages conversation' },
+  { id: 'dependents', label: 'My Dependents', value: 'Family care', change: 'Manage family profiles', icon: 'fa-people-roof', tone: 'mint', to: '/dependent', terms: 'dependent family child' },
+];
+function MiniBars({ bars }) { return <div className="nc-mini-bars" aria-hidden="true">{bars.map((height, index) => <span key={index} style={{ height: `${height}%` }} />)}</div>; }
 function Home({ isClosed, setIsClosed }) {
-  return (
-    <>
-      <header className="header">
-
-        {/* Page Title */}
-        <div className="page-title">
-          <Link to="/login">
-            <i className="fa-solid fa-house"></i>
-          </Link>
-
-          <small>/ Dashboard</small>
-
-          <h3>Dashboard</h3>
-        </div>
-
-        {/* Menu Button */}
-        <button id="menuBtn"
-        className="menu-btn"
-        onClick={() => setIsClosed(!isClosed)}>
-          <i className="fa-solid fa-bars"></i>
-        </button>
-
-        {/* Right Side */}
-        <div className="header-right">
-
-          {/* Search */}
-          <div className="search-box">
-            <i className="fa-solid fa-magnifying-glass"></i>
-
-            <input
-              type="text"
-              placeholder="Search..."
-            />
-          </div>
-
-          {/* Notification */}
-          <button className="header-icon">
-            <i className="fa-solid fa-bell"></i>
-          </button>
-
-          {/* Settings */}
-          <button className="header-icon">
-            <i className="fa-solid fa-gear"></i>
-          </button>
-
-          {/* Profile */}
-          <div className="profile">
-
-            <div className="profile-img">
-              <i className="fa-solid fa-circle-user"></i>
-            </div>
-
-            <div>
-              <strong>My Account</strong>
-              <small>Welcome</small>
-            </div>
-
-          </div>
-
-        </div>
-        
-      </header>
-      {/* main content */}
-      <main className="dashboard-content">
-
-      </main>
-    </>
-  );
+  const { user, appointments, notifications, markNotificationsRead, cart } = useApp();
+  const [query, setQuery] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
+  const filtered = useMemo(() => services.filter((item) => `${item.label} ${item.terms}`.toLowerCase().includes(query.trim().toLowerCase())), [query]);
+  const unread = notifications.filter((item) => !item.read).length;
+  const upcoming = appointments.filter((item) => new Date(`${item.date}T${item.time || '12:00'}`) >= new Date()).sort((a,b) => new Date(`${a.date}T${a.time || '12:00'}`)-new Date(`${b.date}T${b.time || '12:00'}`));
+  return <section className={`nc-dashboard-page ${isClosed ? 'nc-sidebar-collapsed' : ''}`}>
+    <header className="nc-dashboard-header"><div className="nc-page-title"><button className="nc-home-mark" onClick={() => navigate('/')} aria-label="Dashboard"><i className="fa-solid fa-heart-pulse"/></button><div><span>My Patient HUB / Workspace</span><h1>Dashboard</h1></div></div>
+      <button className="nc-menu-button" type="button" aria-label="Toggle sidebar" onClick={() => setIsClosed(!isClosed)}><i className="fa-solid fa-bars"/></button>
+      <div className="nc-header-right"><div className="nc-search-wrap"><label className="nc-search-box"><i className="fa-solid fa-magnifying-glass"/><input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search doctors, services, appointments..." aria-label="Search your workspace"/><kbd>⌕</kbd></label>{query.trim() && <div className="nc-search-results"><strong>Search results</strong>{filtered.length ? filtered.map((item) => <button key={item.id} onClick={() => { navigate(item.to); setQuery(''); }}><span className={`nc-search-result-icon nc-${item.tone}`}><i className={`fa-solid ${item.icon}`}/></span><span>{item.label}<small>{item.change}</small></span><i className="fa-solid fa-arrow-up-right-from-square"/></button>) : <p>No matching service found. Try “doctor”, “clinic” or “market”.</p>}</div>}</div>
+        <div className="nc-header-pop-wrap"><button className="nc-header-icon" type="button" aria-label="Notifications" onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); markNotificationsRead(); }}><i className="fa-regular fa-bell"/>{unread > 0 && <span className="nc-notification-count">{unread}</span>}</button>{showNotifications && <div className="nc-popover"><div className="nc-popover-title"><strong>Notifications</strong><small>{notifications.length} updates</small></div>{notifications.slice(0,5).map((n) => <div className="nc-notification-row" key={n.id}><span className="nc-notification-dot"/><div><b>{n.title}</b><p>{n.detail}</p></div></div>)}{!notifications.length && <p>No notifications yet.</p>}</div>}</div>
+        <Link to="/cart" className="nc-header-icon nc-cart-top-icon" aria-label="Shopping cart" title="Shopping cart"><i className="fa-solid fa-bag-shopping"/>{cart.reduce((sum,item)=>sum+item.quantity,0)>0 && <span className="nc-notification-count">{cart.reduce((sum,item)=>sum+item.quantity,0)}</span>}</Link>
+        <div className="nc-header-pop-wrap"><button className="nc-profile" onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }}><span className="nc-profile-avatar">{(user?.fullName || 'P').slice(0,1).toUpperCase()}</span><span><strong>{user?.fullName || 'My Account'}</strong><small>{user?.email || user?.phone || 'Patient account'}</small></span><i className="fa-solid fa-chevron-down nc-profile-chevron"/></button>{showProfile && <div className="nc-popover nc-profile-pop"><button onClick={() => navigate('/account')}><i className="fa-regular fa-user"/> My Account</button><button onClick={() => navigate('/setting')}><i className="fa-solid fa-gear"/> Settings</button><button onClick={() => navigate('/cart')}><i className="fa-solid fa-bag-shopping"/> Shopping cart <b>{cart.reduce((sum,item)=>sum+item.quantity,0)}</b></button></div>}</div>
+      </div></header>
+    <main className="nc-dashboard-main"><section className="nc-welcome-panel"><div className="nc-welcome-copy"><span className="nc-eyebrow"><i className="fa-solid fa-sparkles"/> YOUR HEALTH WORKSPACE</span><h2>Hello, {user?.fullName?.split(' ')[0] || 'there'}<span>.</span></h2><p>Good care starts with a clear plan. Find local healthcare, manage your appointments and keep your everyday essentials together.</p><Link to="/doctor" className="nc-primary-button">Find a doctor <i className="fa-solid fa-arrow-right"/></Link></div><div className="nc-welcome-art" aria-hidden="true"><span className="nc-art-circle nc-art-circle-one"/><span className="nc-art-circle nc-art-circle-two"/><span className="nc-art-cross"><i className="fa-solid fa-plus"/></span><span className="nc-art-heart"><i className="fa-solid fa-heart-pulse"/></span><span className="nc-art-spark nc-art-spark-one">✦</span><span className="nc-art-spark nc-art-spark-two">✧</span></div></section>
+      <section className="nc-overview-section"><div className="nc-section-heading"><div><span className="nc-section-kicker">YOUR HEALTH, AT A GLANCE</span><h2>Explore your workspace</h2></div><span className="nc-updated-label"><i className="fa-solid fa-location-dot"/> Afghanistan edition</span></div><p className="nc-scroll-hint"><i className="fa-solid fa-arrows-left-right"/> Scroll horizontally to explore · cards are arranged in two rows</p><div className="nc-card-viewport" tabIndex="0" aria-label="Workspace cards. Scroll horizontally to view more."><div className="nc-card-grid">{services.map((card) => <Link to={card.to} className={`nc-dashboard-card nc-card-${card.id}`} key={card.id}><div className="nc-card-heading"><span className={`nc-card-icon nc-${card.tone}`}><i className={`fa-solid ${card.icon}`}/></span><div><h3>{card.label}</h3><p>Workspace service</p></div><i className="fa-solid fa-arrow-up-right-from-square nc-card-open"/></div><div className="nc-metric-body"><div><strong className="nc-metric-value">{card.id === 'appointments' ? String(appointments.length).padStart(2,'0') : card.id === 'market' ? 'Local' : card.id === 'chat' ? 'Inbox' : card.value}</strong><div className="nc-metric-change"><span><i className="fa-solid fa-arrow-right"/> {card.change}</span></div></div>{card.bars ? <MiniBars bars={card.bars}/> : <span className={`nc-card-large-icon nc-${card.tone}`}><i className={`fa-solid ${card.icon}`}/></span>}</div><span className="nc-card-bottom-link">Open section <i className="fa-solid fa-arrow-right"/></span></Link>)}</div></div><div className="nc-horizontal-scroll-label"><span><i className="fa-solid fa-grip-lines-vertical"/> Eight connected services</span><span>Scroll left and right <i className="fa-solid fa-arrow-left-long"/> <i className="fa-solid fa-arrow-right-long"/></span></div></section>
+      <section className="nc-dashboard-lower"><div className="nc-lower-panel"><div className="nc-lower-heading"><div><span className="nc-section-kicker">PLAN AHEAD</span><h2>Upcoming appointments</h2></div><Link to="/appointments">View all <i className="fa-solid fa-arrow-right"/></Link></div>{upcoming.length ? upcoming.slice(0,2).map((item) => <div className="nc-upcoming-row" key={item.id}><span className="nc-upcoming-icon"><i className="fa-solid fa-calendar-check"/></span><div><b>{item.doctor}</b><small>{item.specialty} · {item.location || 'Afghanistan'}</small></div><time>{item.date} · {item.time}</time><span className="nc-status-pill">{item.status}</span></div>) : <div className="nc-empty-inline"><span><i className="fa-regular fa-calendar"/></span><div><b>No appointments yet</b><small>Book a doctor visit and it will appear here.</small></div><Link to="/doctor">Find a doctor</Link></div>}</div><div className="nc-lower-panel nc-care-panel"><span className="nc-care-symbol"><i className="fa-solid fa-heart-pulse"/></span><div><span className="nc-section-kicker">A LITTLE REMINDER</span><h2>Your care, your pace.</h2><p>Keep your contact information current and save appointments in one place.</p><Link to="/account">Review my account <i className="fa-solid fa-arrow-right"/></Link></div></div></section>
+      <footer className="nc-dashboard-footer"><span>© 2026 My Patient HUB</span><span><i className="fa-solid fa-shield-heart"/> Healthcare & everyday care, connected.</span></footer>
+    </main></section>;
 }
-
 export default Home;
