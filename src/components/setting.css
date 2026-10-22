@@ -752,6 +752,25 @@ html {
   color: black;
 }
 
+.setting-profile-image,
+.setting-avatar-placeholder {
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.setting-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e9e5ff;
+  color: #6554c0;
+  font-size: 30px;
+  border: 2px solid #d8d0ff;
+}
+
 /* =====================================
    TABLET
 ===================================== */

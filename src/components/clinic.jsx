@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   MapContainer,
   TileLayer,
@@ -9,9 +9,11 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "./clinic.css";
 
 // Fix Leaflet marker icons in Vite
 delete L.Icon.Default.prototype._getIconUrl;
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -21,7 +23,7 @@ L.Icon.Default.mergeOptions({
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Demo clinic data. Coordinates are approximate examples.
+// Clinic data
 const clinics = [
   {
     id: 1,
@@ -47,7 +49,7 @@ const clinics = [
   },
 ];
 
-// Automatically adjust map to the filtered clinics.
+// Fit map to clinic markers
 function FitMapToResults({ items }) {
   const map = useMap();
 
@@ -73,18 +75,53 @@ function FitMapToResults({ items }) {
 }
 
 function Clinic({ isClosed, setIsClosed }) {
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
+
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [appliedLocation, setAppliedLocation] = useState("");
+
   const [specialty, setSpecialty] = useState("all");
   const [view, setView] = useState("list");
 
+  // Notification panel
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Demo notifications
+  const notifications = [
+    {
+      id: 1,
+      title: "Clinic page updated",
+      message:
+        "You can search clinics and view their locations on the map.",
+      time: "Recent update",
+    },
+    {
+      id: 2,
+      title: "Clinic search available",
+      message:
+        "Search clinics by name, type, location, and specialty.",
+      time: "Available now",
+    },
+    {
+      id: 3,
+      title: "Account settings",
+      message:
+        "Visit Setting to manage your profile and security options.",
+      time: "Available now",
+    },
+  ];
+
+  // Filter clinics using the applied clinic name and location
   const filteredClinics = clinics.filter((clinic) => {
-    const searchText = search.trim().toLowerCase();
-    const locationText = location.trim().toLowerCase();
+    const searchText = appliedSearch.trim().toLowerCase();
+    const locationText = appliedLocation.trim().toLowerCase();
 
     const searchMatch =
       !searchText ||
-      `${clinic.name} ${clinic.type} ${clinic.specialty} ${clinic.location}`
+      `${clinic.name} ${clinic.type} ${clinic.specialty} ${clinic.doctors}`
         .toLowerCase()
         .includes(searchText);
 
@@ -98,14 +135,40 @@ function Clinic({ isClosed, setIsClosed }) {
     return searchMatch && locationMatch && specialtyMatch;
   });
 
+  // Search by clinic name/type and show the list
+  function handleCurrentSearch() {
+    setAppliedSearch(search);
+    setAppliedLocation("");
+    setLocation("");
+    setView("list");
+  }
+
+  // Search by city/location and show the map
+  function handleLocationSearch() {
+    setAppliedLocation(location);
+    setAppliedSearch("");
+    setSearch("");
+    setView("map");
+  }
+
+  function handleClearFilters() {
+    setSearch("");
+    setLocation("");
+    setAppliedSearch("");
+    setAppliedLocation("");
+    setSpecialty("all");
+    setView("list");
+  }
+
   return (
     <section
       className={`find-clinic ${isClosed ? "sidebar-closed" : ""}`}
     >
+      {/* Clinic banner and header */}
       <div className="clinic-banner">
         <div className="clinic-top">
           <div className="page-title">
-            <a href="/">
+            <a href="/" aria-label="Home">
               <i className="fa-solid fa-house" />
             </a>
 
@@ -118,7 +181,7 @@ function Clinic({ isClosed, setIsClosed }) {
           <button
             type="button"
             className="menu-btn"
-            onClick={() => setIsClosed(!isClosed)}
+            onClick={() => setIsClosed((previous) => !previous)}
             aria-label="Toggle sidebar"
           >
             <i className="fa-solid fa-bars" />
@@ -127,26 +190,77 @@ function Clinic({ isClosed, setIsClosed }) {
           <div className="header-right">
             <div className="search-box">
               <i className="fa-solid fa-magnifying-glass" />
+
               <input
                 type="search"
                 placeholder="Search clinics..."
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleCurrentSearch();
+                  }
+                }}
               />
             </div>
 
-            <button
-              type="button"
-              className="header-icon"
-              aria-label="Notifications"
-            >
-              <i className="fa-solid fa-bell" />
-            </button>
+            {/* Notifications */}
+            <div className="clinic-notification-wrapper">
+              <button
+                type="button"
+                className="header-icon"
+                aria-label="Notifications"
+                aria-expanded={showNotifications}
+                title="Notifications"
+                onClick={() =>
+                  setShowNotifications((previous) => !previous)
+                }
+              >
+                <i className="fa-solid fa-bell" />
+                <span className="clinic-notification-dot" />
+              </button>
 
+              {showNotifications && (
+                <div className="clinic-notification-panel">
+                  <div className="clinic-notification-heading">
+                    <h3>Recent Updates</h3>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowNotifications(false)}
+                      aria-label="Close notifications"
+                    >
+                      <i className="fa-solid fa-xmark" />
+                    </button>
+                  </div>
+
+                  {notifications.map((notification) => (
+                    <div
+                      className="clinic-notification-item"
+                      key={notification.id}
+                    >
+                      <span className="clinic-notification-icon">
+                        <i className="fa-solid fa-bell" />
+                      </span>
+
+                      <div>
+                        <strong>{notification.title}</strong>
+                        <p>{notification.message}</p>
+                        <small>{notification.time}</small>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Navigate to Setting page */}
             <button
               type="button"
               className="header-icon"
               aria-label="Settings"
+              title="Setting"
+              onClick={() => navigate("/setting")}
             >
               <i className="fa-solid fa-gear" />
             </button>
@@ -155,6 +269,7 @@ function Clinic({ isClosed, setIsClosed }) {
               <div className="profile-img">
                 <i className="fa-solid fa-circle-user" />
               </div>
+
               <div>
                 <strong>My Account</strong>
                 <small>Welcome</small>
@@ -164,16 +279,23 @@ function Clinic({ isClosed, setIsClosed }) {
         </div>
 
         <h1>Find a Clinic</h1>
+
         <p>
           Find healthcare centers and view their locations on the map.
         </p>
 
-        <div className="search-area">
+        {/* Clinic search and location search */}
+        <div className="search-area clinic-search-area">
           <input
             type="search"
-            placeholder="Search by clinic name or type"
+            placeholder="Search clinic name or type"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleCurrentSearch();
+              }
+            }}
           />
 
           <input
@@ -181,17 +303,30 @@ function Clinic({ isClosed, setIsClosed }) {
             placeholder="Enter city or location"
             value={location}
             onChange={(event) => setLocation(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleLocationSearch();
+              }
+            }}
           />
 
           <button
             type="button"
-            onClick={() => setView("list")}
+            onClick={handleCurrentSearch}
+          >
+            Current
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLocationSearch}
           >
             Search
           </button>
         </div>
       </div>
 
+      {/* List and map view buttons */}
       <div className="view-button">
         <button
           type="button"
@@ -210,6 +345,7 @@ function Clinic({ isClosed, setIsClosed }) {
         </button>
       </div>
 
+      {/* Filters and results */}
       <div className="clinic-content">
         <aside className="clinic-filter">
           <h3>Filter By</h3>
@@ -228,11 +364,12 @@ function Clinic({ isClosed, setIsClosed }) {
           </p>
 
           <p className="clinic-filter-note">
-            Search and specialty filters update both the list and the map.
+            Search and specialty filters update clinic results.
           </p>
         </aside>
 
         <div className="clinic-result">
+          {/* Clinic list */}
           {view === "list" && (
             <div id="listView">
               {filteredClinics.map((clinic) => (
@@ -261,7 +398,13 @@ function Clinic({ isClosed, setIsClosed }) {
                     <button
                       type="button"
                       className="clinic-show-map"
-                      onClick={() => setView("map")}
+                      onClick={() => {
+                        setAppliedSearch(clinic.name);
+                        setAppliedLocation("");
+                        setSearch(clinic.name);
+                        setLocation("");
+                        setView("map");
+                      }}
                     >
                       <i className="fa-solid fa-map-location-dot" />{" "}
                       Show on map
@@ -284,6 +427,7 @@ function Clinic({ isClosed, setIsClosed }) {
             </div>
           )}
 
+          {/* Clinic map */}
           {view === "map" && (
             <div id="mapView">
               <div className="clinic-map-heading">
@@ -296,11 +440,7 @@ function Clinic({ isClosed, setIsClosed }) {
 
                 <button
                   type="button"
-                  onClick={() => {
-                    setSearch("");
-                    setLocation("");
-                    setSpecialty("all");
-                  }}
+                  onClick={handleClearFilters}
                 >
                   Clear filters
                 </button>
@@ -345,7 +485,7 @@ function Clinic({ isClosed, setIsClosed }) {
                 </MapContainer>
               ) : (
                 <p className="clinic-empty">
-                  No clinics match your search, so there are no markers to show.
+                  No clinics match your location, so there are no markers to show.
                 </p>
               )}
             </div>

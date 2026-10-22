@@ -6,20 +6,28 @@ import "./setting.css";
 function Setting({ isClosed, setIsClosed }) {
   const { user, setUser, signOut } = useApp();
   const navigate = useNavigate();
+
+  const makeForm = (currentUser) => ({
+    firstName: currentUser?.fullName?.split(" ")[0] || "",
+    lastName: currentUser?.fullName?.split(" ").slice(1).join(" ") || "",
+    gender: currentUser?.gender || "",
+    birthDate: currentUser?.birthDate || "",
+    email: currentUser?.email || "",
+    bloodGroup: currentUser?.bloodGroup || "",
+    phone: currentUser?.phone || "",
+    address: currentUser?.address || "Kabul, Afghanistan",
+  });
+
+  const [form, setForm] = useState(() => makeForm(user));
+  const [savedForm, setSavedForm] = useState(() => makeForm(user));
+
   const [profileVisible, setProfileVisible] = useState(true);
   const [activeSection, setActiveSection] = useState("basic-info");
-  const [passwordMessage, setPasswordMessage] = useState("");
 
-  const [form, setForm] = useState({
-    firstName: user?.fullName?.split(" ")[0] || "",
-    lastName: user?.fullName?.split(" ").slice(1).join(" ") || "",
-    gender: "",
-    birthDate: "",
-    email: user?.email || "",
-    bloodGroup: "",
-    phone: user?.phone || "",
-    address: user?.address || "Kabul, Afghanistan",
-  });
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [profileMessage, setProfileMessage] = useState("");
+  const [securityMessage, setSecurityMessage] = useState("");
+  const [headerSearch, setHeaderSearch] = useState("");
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -27,29 +35,37 @@ function Setting({ isClosed, setIsClosed }) {
     confirmPassword: "",
   });
 
-  const [twoFactorEnabled] = useState(true);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [securityKey, setSecurityKey] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("008737859384");
+  const [authenticatorConfigured, setAuthenticatorConfigured] =
+    useState(false);
 
-  const [sessions] = useState([
+  const [sessions, setSessions] = useState([
     {
       id: 1,
       device: "Bucharest 68.133.163.201",
       location: "EU",
       active: true,
+      details: "Current browser session",
     },
     {
       id: 2,
       device: "Chrome on macOS",
       location: "US",
       active: false,
+      details: "Previously signed-in browser",
     },
     {
       id: 3,
       device: "Safari on iPhone",
       location: "US",
       active: false,
+      details: "Previously signed-in mobile device",
     },
   ]);
 
+  const [expandedSessions, setExpandedSessions] = useState([]);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
 
@@ -60,6 +76,8 @@ function Setting({ isClosed, setIsClosed }) {
       ...previous,
       [name]: value,
     }));
+
+    setProfileMessage("");
   };
 
   const handlePasswordChange = (event) => {
@@ -75,16 +93,82 @@ function Setting({ isClosed, setIsClosed }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setUser((previous) => ({ ...previous, fullName: `${form.firstName} ${form.lastName}`.trim(), email: form.email, phone: form.phone, address: form.address }));
-    setPasswordMessage("Your profile information has been saved in this browser.");
+
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      setProfileMessage("Please enter both your first and last name.");
+      return;
+    }
+
+    if (
+      form.email &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+    ) {
+      setProfileMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (form.birthDate) {
+      const birthDate = new Date(`${form.birthDate}T00:00:00`);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (Number.isNaN(birthDate.getTime()) || birthDate > today) {
+        setProfileMessage("Please enter a valid date of birth.");
+        return;
+      }
+    }
+
+    const updatedUser = {
+      ...(user || {}),
+      fullName: `${form.firstName.trim()} ${form.lastName.trim()}`,
+      gender: form.gender,
+      birthDate: form.birthDate,
+      email: form.email.trim(),
+      bloodGroup: form.bloodGroup,
+      phone: form.phone.trim(),
+      address: form.address.trim(),
+    };
+
+    setUser(updatedUser);
+    setSavedForm({ ...form });
+    setProfileMessage("Your profile information has been saved.");
+  };
+
+  const handleReset = () => {
+    setForm({ ...savedForm });
+    setProfileMessage("Form restored to the last saved information.");
   };
 
   const handlePasswordSubmit = (event) => {
     event.preventDefault();
 
+    if (!passwords.currentPassword.trim()) {
+      setPasswordMessage("Please enter your current password.");
+      return;
+    }
+
     if (passwords.newPassword.length < 6) {
       setPasswordMessage(
         "Your new password must contain at least 6 characters."
+      );
+      return;
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwords.newPassword)) {
+      setPasswordMessage(
+        "Please include at least one special character."
+      );
+      return;
+    }
+
+    if (!/\d/.test(passwords.newPassword)) {
+      setPasswordMessage("Please include at least one number.");
+      return;
+    }
+
+    if (passwords.newPassword === passwords.currentPassword) {
+      setPasswordMessage(
+        "Your new password must differ from your current password."
       );
       return;
     }
@@ -95,75 +179,217 @@ function Setting({ isClosed, setIsClosed }) {
     }
 
     setPasswordMessage(
-      "Password form validated. Connect your backend to update the real password."
+      "Password form validated. A secure backend is required to verify and update your real password."
     );
-  };
 
-  const handleReset = () => {
-    setForm({
-      firstName: "",
-      lastName: "",
-      gender: "",
-      birthDate: "",
-      email: "",
-      bloodGroup: "",
-      phone: "",
-      address: "",
+    setPasswords({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     });
   };
 
-  const handleDeleteAccount = () => {
-    if (!deleteConfirmed) {
-      alert("Please confirm that you want to delete your account.");
+  // Toggle profile visibility and mask/unmask the profile name.
+  const handleVisibilityChange = () => {
+    setProfileVisible((previous) => {
+      const nextValue = !previous;
+
+      setProfileMessage(
+        nextValue
+          ? "Your profile name and photo are visible."
+          : "Your profile photo is replaced by an avatar and your name is masked."
+      );
+
+      return nextValue;
+    });
+  };
+
+  const handleTwoFactor = () => {
+    setTwoFactorEnabled((previous) => !previous);
+    setSecurityMessage(
+      twoFactorEnabled
+        ? "Two-factor authentication is shown as disabled."
+        : "Two-factor authentication is shown as enabled."
+    );
+  };
+
+  const handleSecurityKey = () => {
+    const value = window.prompt(
+      "Enter a security key name. Leave empty to clear it:",
+      securityKey
+    );
+
+    if (value === null) return;
+
+    setSecurityKey(value.trim());
+    setSecurityMessage(
+      value.trim()
+        ? "Security key information updated in this interface."
+        : "Security key information cleared."
+    );
+  };
+
+  const handlePhoneEdit = () => {
+    const value = window.prompt(
+      "Enter your SMS phone number:",
+      phoneNumber
+    );
+
+    if (value === null) return;
+
+    if (!value.trim()) {
+      setSecurityMessage("Phone number cannot be empty.");
       return;
     }
 
-    alert(
-      "This is a demo only. Real account deletion must be handled securely by your backend."
+    setPhoneNumber(value.trim());
+    setSecurityMessage("SMS phone number updated in this interface.");
+  };
+
+  const handleAuthenticator = () => {
+    setAuthenticatorConfigured((previous) => !previous);
+
+    setSecurityMessage(
+      authenticatorConfigured
+        ? "Authenticator marked as not configured."
+        : "Authenticator marked as configured in this interface."
     );
+  };
+
+  const handleSessionDetails = (sessionId) => {
+    setExpandedSessions((previous) =>
+      previous.includes(sessionId)
+        ? previous.filter((id) => id !== sessionId)
+        : [...previous, sessionId]
+    );
+  };
+
+  const handleEndSession = (sessionId) => {
+    const session = sessions.find((item) => item.id === sessionId);
+
+    if (!session) return;
+
+    if (
+      session.active &&
+      !window.confirm(
+        "This is the current session. Ending it will log you out. Continue?"
+      )
+    ) {
+      return;
+    }
+
+    if (session.active) {
+      signOut();
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    setSessions((previous) =>
+      previous.filter((item) => item.id !== sessionId)
+    );
+
+    setSecurityMessage("The selected demo session has been removed.");
+  };
+
+  const handleDeactivate = () => {
+    const nextState = !accountDeactivated;
+
+    if (
+      nextState &&
+      !window.confirm(
+        "Deactivate this account in this demo interface? This does not deactivate a server account."
+      )
+    ) {
+      return;
+    }
+
+    setAccountDeactivated(nextState);
+
+    setSecurityMessage(
+      nextState
+        ? "Account marked as deactivated in this interface."
+        : "Account marked as active in this interface."
+    );
+  };
+
+  // Delete the current user from app state and return to Login.
+  const handleDeleteAccount = () => {
+    if (!deleteConfirmed) {
+      window.alert("Please check the confirmation box first.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    setUser(null);
+    signOut();
+    navigate("/login", { replace: true });
   };
 
   const navigateTo = (section) => {
     setActiveSection(section);
+
     document.getElementById(section)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   };
 
-  return (
-    <main className={`setting-page ${isClosed ? "setting-sidebar-closed" : "" }`}>
+  const filteredSessions = sessions.filter((session) =>
+    `${session.device} ${session.location}`
+      .toLowerCase()
+      .includes(headerSearch.trim().toLowerCase())
+  );
 
-      {/* ================= TOP HEADER ================= */}
+  return (
+    <main
+      className={`setting-page ${
+        isClosed ? "setting-sidebar-closed" : ""
+      }`}
+    >
+      {/* TOP HEADER */}
       <header className="setting-top-header">
         <div className="setting-header-left">
-        
           <div className="setting-breadcrumb">
             <Link to="/">Home</Link>
             <i className="fa-solid fa-chevron-right"></i>
             <span>Account Setting</span>
           </div>
         </div>
-         <button
-            type="button"
-            className="setting-menu-button"
-            onClick={() => setIsClosed(!isClosed)}
-            aria-label="Toggle sidebar">
-            <i className="fa-solid fa-bars"></i>
-          </button>
-        
-        {/* header right */}
+
+        <button
+          type="button"
+          className="setting-menu-button"
+          onClick={() => setIsClosed((previous) => !previous)}
+          aria-label="Toggle sidebar"
+        >
+          <i className="fa-solid fa-bars"></i>
+        </button>
+
         <div className="setting-header-right">
           <label className="setting-search">
             <i className="fa-solid fa-magnifying-glass"></i>
-            <input type="search" placeholder="Type here..." />
+            <input
+              type="search"
+              value={headerSearch}
+              onChange={(event) => setHeaderSearch(event.target.value)}
+              placeholder="Search sessions..."
+              aria-label="Search sessions"
+            />
           </label>
 
-          
           <button
             type="button"
             className="setting-logout"
-            onClick={() => { signOut(); navigate("/login"); }}>
+            onClick={() => {
+              signOut();
+              navigate("/login", { replace: true });
+            }}
+          >
             <i className="fa-solid fa-circle-user"></i>
             <span>Log out</span>
           </button>
@@ -171,96 +397,92 @@ function Setting({ isClosed, setIsClosed }) {
           <button
             type="button"
             className="setting-header-icon"
-            aria-label="Settings"
-            title="Settings">
+            onClick={() => navigateTo("basic-info")}
+            aria-label="Basic information"
+            title="Basic information"
+          >
             <i className="fa-solid fa-gear"></i>
           </button>
 
           <button
             type="button"
             className="setting-header-icon"
+            onClick={() =>
+              window.alert(
+                profileMessage || securityMessage || "You are all caught up."
+              )
+            }
             aria-label="Notifications"
-            title="Notifications">
+            title="Notifications"
+          >
             <i className="fa-solid fa-bell"></i>
           </button>
         </div>
       </header>
 
-      {/* ================= PAGE CONTENT ================= */}
       <div className="setting-content">
-       
-
         <div className="setting-layout">
-          {/* ================= SETTINGS MENU ================= */}
+          {/* SETTINGS MENU */}
           <aside className="setting-navigation">
-
-            <button
-              type="button"
-              className={`setting-nav-link ${
-                activeSection === "profile" ? "active" : "" }`}
-              onClick={() => navigateTo("profile")}>
-              <i className="fa-solid fa-user"></i>
-              <span>Profile</span>
-            </button>
-
-            <button
-              type="button"
-              className={`setting-nav-link ${
-                activeSection === "basic-info" ? "active" : "" }`}
-              onClick={() => navigateTo("basic-info")}>
-              <i className="fa-solid fa-id-card"></i>
-              <span>Basic Info</span>
-            </button>
-
-            <button
-              type="button"
-              className={`setting-nav-link ${
-                activeSection === "password" ? "active" : "" }`}
-              onClick={() => navigateTo("password")}>
-              <i className="fa-solid fa-cube"></i>
-              <span>Change Password</span>
-            </button>
-
-            <button
-              type="button"
-              className={`setting-nav-link ${
-                activeSection === "two-factor" ? "active" : "" }`}
-              onClick={() => navigateTo("two-factor")}>
-              <i className="fa-solid fa-lock"></i>
-              <span>2FA</span>
-            </button>
-
-            <button
-              type="button"
-              className={`setting-nav-link ${
-                activeSection === "sessions" ? "active" : "" }`}
-              onClick={() => navigateTo("sessions")}>
-              <i className="fa-solid fa-sliders"></i>
-              <span>Sessions</span>
-            </button>
-
-            <button
-              type="button"
-              className={`setting-nav-link  ${
-                activeSection === "delete-account" ? "active" : "" }`}
-              onClick={() => navigateTo("delete-account")}>
-              <i className="fa-solid fa-trash"></i>
-              <span>Delete Account</span>
-            </button>
+            {[
+              ["profile", "fa-user", "Profile"],
+              ["basic-info", "fa-id-card", "Basic Info"],
+              ["password", "fa-lock", "Change Password"],
+              ["two-factor", "fa-shield-halved", "2FA"],
+              ["sessions", "fa-sliders", "Sessions"],
+              ["delete-account", "fa-trash", "Delete Account"],
+            ].map(([id, icon, label]) => (
+              <button
+                type="button"
+                key={id}
+                className={`setting-nav-link ${
+                  activeSection === id ? "active" : ""
+                }`}
+                onClick={() => navigateTo(id)}
+              >
+                <i className={`fa-solid ${icon}`}></i>
+                <span>{label}</span>
+              </button>
+            ))}
           </aside>
 
-          {/* ================= RIGHT SIDE ================= */}
           <div className="setting-sections">
             {/* PROFILE */}
-            <section className="setting-card setting-profile-card" id="profile">
+            <section
+              className="setting-card setting-profile-card"
+              id="profile"
+            >
               <div className="setting-profile-user">
-                <img
-                  src="https://placehold.co/100x100/e9e5ff/6554c0?text=AS"
-                  alt="Patient profile"/>
+                {profileVisible ? (
+                  <img
+                    src="https://placehold.co/100x100/e9e5ff/6554c0?text=AS"
+                    alt="Patient profile"
+                    className="setting-profile-image"
+                  />
+                ) : (
+                  <div
+                    className="setting-avatar-placeholder"
+                    aria-label="Anonymous profile avatar"
+                    role="img"
+                  >
+                    <i className="fa-solid fa-user"></i>
+                  </div>
+                )}
 
                 <div>
-                  <h2>{form.firstName || "Patient"} {form.lastName}</h2>
+                  <h2>
+                    {profileVisible
+                      ? `${form.firstName || "Patient"} ${form.lastName}`.trim()
+                      : "••••••••••"}
+                  </h2>
+
                   <p>Patient</p>
+
+                  <small>
+                    {profileVisible
+                      ? "Profile visible"
+                      : "Profile invisible"}
+                  </small>
                 </div>
               </div>
 
@@ -274,7 +496,9 @@ function Setting({ isClosed, setIsClosed }) {
                 <input
                   type="checkbox"
                   checked={!profileVisible}
-                  onChange={() => setProfileVisible((previous) => !previous)}/>
+                  onChange={handleVisibilityChange}
+                  aria-label="Switch profile visibility"
+                />
 
                 <span className="setting-switch"></span>
               </label>
@@ -298,7 +522,8 @@ function Setting({ isClosed, setIsClosed }) {
                       value={form.firstName}
                       onChange={handleChange}
                       placeholder="First name"
-                      required/>
+                      required
+                    />
                   </div>
 
                   <div className="setting-field">
@@ -309,7 +534,8 @@ function Setting({ isClosed, setIsClosed }) {
                       value={form.lastName}
                       onChange={handleChange}
                       placeholder="Last name"
-                      required/>
+                      required
+                    />
                   </div>
 
                   <div className="setting-field">
@@ -318,7 +544,9 @@ function Setting({ isClosed, setIsClosed }) {
                       id="gender"
                       name="gender"
                       value={form.gender}
-                      onChange={handleChange}>
+                      onChange={handleChange}
+                    >
+                      <option value="">Select gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
@@ -332,7 +560,8 @@ function Setting({ isClosed, setIsClosed }) {
                       id="birthDate"
                       name="birthDate"
                       value={form.birthDate}
-                      onChange={handleChange}/>
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="setting-field">
@@ -343,7 +572,8 @@ function Setting({ isClosed, setIsClosed }) {
                       name="email"
                       value={form.email}
                       onChange={handleChange}
-                      placeholder="example@email.com"/>
+                      placeholder="example@email.com"
+                    />
                   </div>
 
                   <div className="setting-field">
@@ -352,7 +582,8 @@ function Setting({ isClosed, setIsClosed }) {
                       id="bloodGroup"
                       name="bloodGroup"
                       value={form.bloodGroup}
-                      onChange={handleChange}>
+                      onChange={handleChange}
+                    >
                       <option value="">Select group</option>
                       <option value="A+">A+</option>
                       <option value="A-">A-</option>
@@ -373,7 +604,8 @@ function Setting({ isClosed, setIsClosed }) {
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
-                      placeholder="+93 XXX XXX XXX"/>
+                      placeholder="+93 XXX XXX XXX"
+                    />
                   </div>
 
                   <div className="setting-field">
@@ -383,19 +615,30 @@ function Setting({ isClosed, setIsClosed }) {
                       name="address"
                       value={form.address}
                       onChange={handleChange}
-                      placeholder="Your address"/>
+                      placeholder="Your address"
+                    />
                   </div>
                 </div>
+
+                {profileMessage && (
+                  <p className="setting-message" role="status">
+                    {profileMessage}
+                  </p>
+                )}
 
                 <div className="setting-form-actions">
                   <button
                     type="button"
                     className="setting-cancel-button"
-                    onClick={handleReset} >
+                    onClick={handleReset}
+                  >
                     Reset
                   </button>
 
-                  <button type="submit" className="setting-primary-button">
+                  <button
+                    type="submit"
+                    className="setting-primary-button"
+                  >
                     Save Changes
                   </button>
                 </div>
@@ -413,46 +656,48 @@ function Setting({ isClosed, setIsClosed }) {
               <form onSubmit={handlePasswordSubmit}>
                 <div className="setting-password-fields">
                   <div className="setting-field">
-                    <label htmlFor="currentPassword">
-                      Current Password
-                    </label>
-
+                    <label htmlFor="currentPassword">Current Password</label>
                     <input
-                      type={"password"}
+                      type="password"
                       id="currentPassword"
                       name="currentPassword"
                       value={passwords.currentPassword}
                       onChange={handlePasswordChange}
                       placeholder="Current Password"
-                      required/>
+                      autoComplete="current-password"
+                      required
+                    />
                   </div>
 
                   <div className="setting-field">
                     <label htmlFor="newPassword">New Password</label>
-
                     <input
-                      type={"password"}
+                      type="password"
                       id="newPassword"
                       name="newPassword"
                       value={passwords.newPassword}
                       onChange={handlePasswordChange}
                       placeholder="New Password"
-                      required/>
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                    />
                   </div>
 
                   <div className="setting-field">
                     <label htmlFor="confirmPassword">
                       Confirm New Password
                     </label>
-
                     <input
-                      type={"password"}
+                      type="password"
                       id="confirmPassword"
                       name="confirmPassword"
                       value={passwords.confirmPassword}
                       onChange={handlePasswordChange}
                       placeholder="Confirm Password"
-                      required/>
+                      autoComplete="new-password"
+                      required
+                    />
                   </div>
                 </div>
 
@@ -461,18 +706,14 @@ function Setting({ isClosed, setIsClosed }) {
                   <p>Please follow this guide for a strong password.</p>
 
                   <ul>
-                    <li className={passwords.newPassword.length >= 6 ? "passed" : "" }>
+                    <li className={passwords.newPassword.length >= 6 ? "passed" : ""}>
                       At least 6 characters
                     </li>
-
-                    <li className={ /[!@#$%^&*(),.?":{}|<>]/.test(passwords.newPassword)
-                          ? "passed"
-                          : "" }>
+                    <li className={/[!@#$%^&*(),.?":{}|<>]/.test(passwords.newPassword) ? "passed" : ""}>
                       One special character
                     </li>
-
-                    <li className={/\d/.test(passwords.newPassword) ? "passed" : "" }>
-                      One number (2 are recommended)
+                    <li className={/\d/.test(passwords.newPassword) ? "passed" : ""}>
+                      One number
                     </li>
                   </ul>
                 </div>
@@ -484,105 +725,130 @@ function Setting({ isClosed, setIsClosed }) {
                 )}
 
                 <div className="setting-form-actions">
-                  <button
-                    type="submit"
-                    className="setting-primary-button">
+                  <button type="submit" className="setting-primary-button">
                     UPDATE PASSWORD
                   </button>
                 </div>
               </form>
             </section>
 
-            {/* TWO FACTOR AUTHENTICATION */}
+            {/* TWO-FACTOR AUTHENTICATION */}
             <section className="setting-card" id="two-factor">
               <div className="setting-section-heading">
                 <div>
                   <h2>Two-Factor Authentication</h2>
                 </div>
-                {/* setting badge */}
-                <span
-                  className={`setting-badge ${
-                    twoFactorEnabled ? "success" : "neutral" }`}>
+
+                <span className={`setting-badge ${twoFactorEnabled ? "success" : "neutral"}`}>
                   {twoFactorEnabled ? "ENABLED" : "DISABLED"}
                 </span>
               </div>
 
               <div className="setting-security-row">
                 <div className="setting-security-info">
-                  
                   <div>
                     <h3>Security keys</h3>
-                    <p>
-                      No Security Key
-                    </p>
+                    <p>{securityKey || "No Security Key"}</p>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  className="setting-outline-button">
-                  ADD
+                  className="setting-outline-button"
+                  onClick={handleSecurityKey}
+                >
+                  {securityKey ? "EDIT" : "ADD"}
                 </button>
               </div>
 
               <div className="setting-security-row">
                 <div className="setting-security-info">
-                  
                   <div>
                     <h3>SMS number</h3>
-                    <p>008737859384</p>
+                    <p>{phoneNumber}</p>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  className="setting-outline-button">
+                  className="setting-outline-button"
+                  onClick={handlePhoneEdit}
+                >
                   EDIT
                 </button>
               </div>
 
               <div className="setting-security-row">
                 <div className="setting-security-info">
-                 
                   <div>
                     <h3>Authenticator app</h3>
                     <p>
-                     Not Configured
+                      {authenticatorConfigured
+                        ? "Configured in this interface"
+                        : "Not Configured"}
                     </p>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  className="setting-outline-button">
-                  Edit
+                  className="setting-outline-button"
+                  onClick={handleAuthenticator}
+                >
+                  {authenticatorConfigured ? "REMOVE" : "SET UP"}
                 </button>
               </div>
-             
+
+              <div className="setting-form-actions">
+                <button
+                  type="button"
+                  className="setting-primary-button"
+                  onClick={handleTwoFactor}
+                >
+                  {twoFactorEnabled ? "DISABLE 2FA" : "ENABLE 2FA"}
+                </button>
+              </div>
+
+              {securityMessage && (
+                <p className="setting-message" role="status">
+                  {securityMessage}
+                </p>
+              )}
             </section>
 
-            {/* =============SESSIONS=========== */}
+            {/* SESSIONS */}
             <section className="setting-card" id="sessions">
               <div className="setting-section-heading">
                 <div>
                   <h2>Sessions</h2>
-                  <p>This is a list of devices that have logged into your account. Remove those that you do not recognize.</p>
+                  <p>
+                    View your demo sessions and remove sessions you no longer
+                    need.
+                  </p>
                 </div>
               </div>
 
               <div className="setting-session-list">
-                {sessions.length === 0 && (
-                  <p>No sessions to display.</p>)}
+                {filteredSessions.length === 0 && (
+                  <p>No matching sessions found.</p>
+                )}
 
-                {sessions.map((session) => (
+                {filteredSessions.map((session) => (
                   <div className="setting-session-row" key={session.id}>
                     <div className="setting-session-device">
-                      <i className={
+                      <i
+                        className={
                           session.device.includes("iPhone")
                             ? "fa-solid fa-mobile-screen"
-                            : "fa-solid fa-desktop"} ></i>
+                            : "fa-solid fa-desktop"
+                        }
+                      ></i>
+
                       <div>
                         <h3>{session.device}</h3>
+                        {expandedSessions.includes(session.id) && (
+                          <p>{session.details}</p>
+                        )}
                       </div>
                     </div>
 
@@ -592,19 +858,25 @@ function Setting({ isClosed, setIsClosed }) {
                       </span>
 
                       {session.active && (
-                        <span className="setting-badge success">
-                          ACTIVE
-                        </span>
+                        <span className="setting-badge success">ACTIVE</span>
                       )}
+
                       <button
                         type="button"
                         className="setting-text-button"
-                        onClick={() => { window.scrollTo({
-                          top: 0,
-                          baehavior: "smooth",
-                        });
-                        }}>
-                        See more →
+                        onClick={() => handleSessionDetails(session.id)}
+                      >
+                        {expandedSessions.includes(session.id)
+                          ? "Hide details"
+                          : "See more"}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="setting-text-button"
+                        onClick={() => handleEndSession(session.id)}
+                      >
+                        End session
                       </button>
                     </div>
                   </div>
@@ -613,14 +885,16 @@ function Setting({ isClosed, setIsClosed }) {
             </section>
 
             {/* DELETE ACCOUNT */}
-            <section className="setting-card setting-delete-card"
-              id="delete-account">
+            <section
+              className="setting-card setting-delete-card"
+              id="delete-account"
+            >
               <div className="setting-section-heading">
                 <div>
                   <h2>Delete Account</h2>
                   <p>
-                    Once you delete your account, there is no going back.
-                    Please be certain.
+                    This demo clears the current app user and signs you out.
+                    Permanent server-side deletion requires a backend.
                   </p>
                 </div>
               </div>
@@ -631,13 +905,16 @@ function Setting({ isClosed, setIsClosed }) {
                     type="checkbox"
                     checked={deleteConfirmed}
                     onChange={(event) =>
-                      setDeleteConfirmed(event.target.checked)}/>
+                      setDeleteConfirmed(event.target.checked)
+                    }
+                  />
 
                   <span className="setting-switch"></span>
 
                   <span>
-                    <strong>Confirm</strong><br></br>
-                    <small>I want to delete my account.</small>
+                    <strong>Confirm</strong>
+                    <br />
+                    <small>I understand and want to continue.</small>
                   </span>
                 </label>
 
@@ -645,29 +922,36 @@ function Setting({ isClosed, setIsClosed }) {
                   <button
                     type="button"
                     className="setting-cancel-button"
-                    onClick={() => {
-                      setAccountDeactivated((previous) => !previous);
-                      alert(
-                        accountDeactivated
-                          ? "Demo: account deactivation cancelled."
-                          : "Demo only: connect account deactivation to your backend.");
-                    }}>
+                    onClick={handleDeactivate}
+                  >
                     {accountDeactivated ? "ACTIVATE" : "DEACTIVATE"}
                   </button>
 
                   <button
                     type="button"
                     className="setting-delete-button"
-                    onClick={handleDeleteAccount}>
+                    onClick={handleDeleteAccount}
+                  >
                     DELETE ACCOUNT
                   </button>
                 </div>
+
+                {accountDeactivated && (
+                  <p className="setting-message" role="status">
+                    Account is marked as deactivated in this interface.
+                  </p>
+                )}
+
+                {securityMessage && (
+                  <p className="setting-message" role="status">
+                    {securityMessage}
+                  </p>
+                )}
               </div>
             </section>
           </div>
         </div>
 
-        {/* FOOTER */}
         <footer className="setting-footer">
           <p>© 2026 MyPatientHUB. All rights reserved.</p>
 
