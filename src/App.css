@@ -213,7 +213,7 @@
 }
 
 .page-title a {
-    color: #7b2ff7;
+    color: #126e70;
     font-size: 18px;
     text-decoration: none;
 }
@@ -238,8 +238,8 @@
 
     border: none;
 
-    background: #f5f2ff;
-    color: #7b2ff7;
+    background: #eaf6f3;
+    color: #126e70;
 
     border-radius: 8px;
 
@@ -252,7 +252,7 @@
 }
 
 .menu-btn:hover {
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
 }
 
@@ -319,7 +319,7 @@
 }
 
 .header-icon:hover {
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
 }
 
@@ -343,7 +343,7 @@
 
     border-radius: 50%;
 
-    color: #7b2ff7;
+    color: #126e70;
     font-size: 35px;
 }
 
@@ -468,7 +468,7 @@
     font-size: 24px;
     font-weight: bold;
 
-    color: #7b2ff7;
+    color: #126e70;
 }
 
 
@@ -503,8 +503,8 @@
 /* Hover */
 
 .sidebar > a:hover {
-    background: #f1eaff;
-    color: #7b2ff7;
+    background: #eaf6f3;
+    color: #126e70;
 }
 
 
@@ -512,14 +512,12 @@
 
 .sidebar > a.active {
     background: linear-gradient(
-        135deg,
-        #7b2ff7,
-        #b43fd1
+      115deg, #123e4d, #126e70 62%, #1a9a83
     );
 
     color: white;
 
-    box-shadow: 0 5px 15px rgba(123, 47, 247, 0.25);
+    box-shadow: 0 5px 15px rgba(18, 110, 112, 0.25);
 }
 
 
@@ -528,7 +526,7 @@
 .help {
     margin-top: auto;
 
-    background: #f7f3ff;
+    background: #eaf6f3;
 
     border-radius: 12px;
 
@@ -536,7 +534,7 @@
 
     text-align: center;
 
-    color: #7b2ff7;
+    color: #126e70;
 }
 
 
@@ -552,7 +550,7 @@
 
     border-radius: 50%;
 
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
 
     font-weight: bold;
@@ -607,7 +605,7 @@ body {
 }
 
 .page-title a {
-    color: #7b2ff7;
+    color: #126e70;
 
     font-size: 18px;
 
@@ -638,9 +636,9 @@ body {
 
     border: none;
 
-    background: #f5f2ff;
+    background: #eaf6f3;
 
-    color: #7b2ff7;
+    color: #126e70;
 
     border-radius: 8px;
 
@@ -655,7 +653,7 @@ body {
 
 
 .menu-btn:hover {
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
 }
 
@@ -744,7 +742,7 @@ body {
 
 
 .header-icon:hover {
-    background: #7b2ff7;
+    background: #126e70;
 
     color: white;
 }
@@ -778,7 +776,7 @@ body {
 
     border-radius: 50%;
 
-    color: #7b2ff7;
+    color: #126e70;
 
     font-size: 35px;
 }
@@ -946,7 +944,7 @@ doctor top
 ========================= */
 
 .doctor-banner {
-    background: linear-gradient(120deg, #7b2ff7, #b43fd1, #f76f8e);
+    background: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
     padding: 45px 40px;
     border-radius: 15px;
     text-align: center;
@@ -1076,7 +1074,7 @@ doctor top
 }
 
 .view-button button.sctive {
-    background-color: #7b2ff7;
+    background-color: #126e70;
     color: white;
 }
 
@@ -1107,7 +1105,7 @@ doctor top
 }
 
 .doctor-filter select:focus {
-    border-color: #7b2ff7;
+    border-color: #126e70;
 }
 
 
@@ -1158,18 +1156,18 @@ doctor top
     padding: 10px 18px;
     border: none;
     border-radius: 7px;
-    background-color: #7b2ff7;
+    background-color: #126e70;
     color: #f6f6f6;
     cursor: pointer;
     font-size: 13px;
 }
 
 .sort-area button:hover {
-    background-color: #4182fc;
+    background-color: #1a9a83;
 }
 
 .sort-area .sort-active {
-    background-color: #7b2ff7;
+    background-color: #126e70;
     color: white;
 }
 
@@ -1220,7 +1218,7 @@ doctor top
 
 .doctor-details h4 {
     font-size: 15px;
-    color: #7b2ff7;
+    color: #126e70;
     margin-bottom: 6px;
 }
 
@@ -1413,7 +1411,7 @@ map view=======*/
 }
 
 .find-clinic .page-title a {
-    color: #7b2ff7;
+    color: #126e70;
     font-size: 18px;
     text-decoration: none;
 }
@@ -1532,7 +1530,7 @@ map view=======*/
 }
 
 .find-clinic .clinic-top .header-icon:hover {
-    background: #7b2ff7;
+    background: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
     color: white;
 }
 
@@ -1578,7 +1576,7 @@ map view=======*/
     padding: 40px;
     margin-bottom: 30px;
     border-radius: 15px;
-    background: linear-gradient(120deg, #7b2ff7, #b43fd1, #f76f8e);
+    background: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
     color: white;
     text-align: center;
 }
@@ -1672,7 +1670,7 @@ map view=======*/
 }
 
 .find-clinic .view-button button.active {
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
 }
 
@@ -1721,7 +1719,7 @@ map view=======*/
 }
 
 .find-clinic .clinic-filter select:focus {
-    border-color: #7b2ff7;
+    border-color: #126e70;
 }
 
 .find-clinic .clinic-result-count,
@@ -1819,7 +1817,7 @@ map view=======*/
     max-width: 100%;
     padding: 10px 15px;
     border-radius: 7px;
-    background: #7b2ff7;
+    background: #126e70;
     color: white;
     font-size: 13px;
     font-weight: bold;
@@ -1831,7 +1829,7 @@ map view=======*/
 }
 
 .find-clinic .clinic-action a:hover {
-    background: #5f1ed1;
+    background: #123e4d;
 }
 
 .find-clinic .clinic-show-map {
@@ -1839,8 +1837,8 @@ map view=======*/
     padding: 9px 12px;
     border: none;
     border-radius: 7px;
-    background: #f1eaff;
-    color: #7b2ff7;
+    background: #eaf6f3;
+    color: #126e70;
     cursor: pointer;
 }
 
@@ -1889,8 +1887,8 @@ map view=======*/
     padding: 9px 12px;
     border: none;
     border-radius: 7px;
-    background: #f1eaff;
-    color: #7b2ff7;
+    background: #eaf6f3;
+    color: #126e70;
     cursor: pointer;
 }
 
@@ -2161,7 +2159,7 @@ map view=======*/
 ======================================================================================================*/
 .market-page {
     margin-left: 230px;
-    width: calca(100% - 230px);
+    width: calc(100% - 230px);
     min-height: 100vh;
     box-sizing: border-box;
     background: #f7f8fa;
@@ -2322,8 +2320,7 @@ map view=======*/
     border: none;
     padding: 10px 27px;
     border-radius: 7px;
-    background: linear-gradient(135deg,
-     #e70091, #c600d8);
+    background: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
      color: white;
      font-size: 11px;
      font-weight: bold;
@@ -2535,8 +2532,8 @@ map view=======*/
 
 /* Input focus */
 .login-form-box input:focus {
-    border-color: #7b2ff7;
-    box-shadow: 0 0 0 3px rgba(123, 47, 247, 0.1);
+    border-color: #126e70;
+    box-shadow: 0 0 0 3px rgba(18, 110, 112, 0.1);
 }
 
 /* Buttons */
@@ -2546,7 +2543,7 @@ map view=======*/
     margin-top: 5px;
     border: none;
     border-radius: 8px;
-    background: #7b2ff7;
+    background: #126e70;
     color: #ffffff;
     font-size: 16px;
     font-weight: bold;
@@ -2567,7 +2564,7 @@ map view=======*/
 }
 
 .login-switch span {
-    color: #7b2ff7;
+    color: #126e70;
     font-weight: bold;
     cursor: pointer;
 }
@@ -2940,7 +2937,7 @@ map view=======*/
 }
 
 .progress-point.active {
-    background: #7b2ff7;
+    background: #126e70;
 }
 
 .progress-line {
@@ -2950,7 +2947,7 @@ map view=======*/
 }
 
 .progress-line.active {
-    background: #7b2ff7;
+    background: #126e70;
 }
 
 
@@ -3025,7 +3022,7 @@ map view=======*/
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: #7b2ff7;
+    border-color: #126e70;
 }
 .dependent-form button {
     margin: 30px;
@@ -3166,7 +3163,7 @@ map view=======*/
 
 .dependent-page .dependent-message {
     margin: 15px 0;
-    color: #6554c0;
+    color: #126e70;
     font-size: 14px;
     line-height: 1.6;
 }
@@ -3178,12 +3175,12 @@ map view=======*/
 }
 
 .dependent-page .plan-card.selected {
-    border: 2px solid #6554c0;
+    border: 2px solid #126e70;
     box-shadow: 0 0 0 3px rgba(101, 84, 192, 0.12);
 }
 
 .dependent-page .plan-card:focus-visible {
-    outline: 2px solid #6554c0;
+    outline: 2px solid #126e70;
     outline-offset: 3px;
 }
 
@@ -3203,7 +3200,7 @@ map view=======*/
 /* Status messages */
 .dependent-page .dependent-message {
   margin: 15px 0;
-  color: #6554c0;
+  color: #126e70;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -3215,12 +3212,12 @@ map view=======*/
 }
 
 .dependent-page .plan-card.selected {
-  border: 2px solid #6554c0;
+  border: 2px solid #126e70;
   box-shadow: 0 0 0 3px rgba(101, 84, 192, 0.12);
 }
 
 .dependent-page .plan-card:focus-visible {
-  outline: 2px solid #6554c0;
+  outline: 2px solid #126e70;
   outline-offset: 3px;
 }
 
@@ -3474,4 +3471,699 @@ body{margin:0;background:var(--hub-bg);color:var(--hub-ink)}
     gap: 8px;
     padding: 10px;
   }
+}
+
+
+
+
+
+
+
+/* =========================================
+   DEPENDENTS PAGE — FIXED STYLES
+   ========================================= */
+
+.dependent-page {
+  min-height: 100vh;
+  width: calc(100% - 230px);
+  margin-left: 230px;
+  padding: 0 28px 40px;
+  box-sizing: border-box;
+  background: #f5f7fb;
+  color: #253047;
+  font-family: Arial, sans-serif;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.dependent-page.sidebar-closed {
+  margin-left: 75px;
+  width: calc(100% - 75px);
+}
+
+/* Header */
+.dependent-page .dependent-header {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5eaf1;
+  box-sizing: border-box;
+}
+
+.dependent-page .dependent-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.dependent-page .dependent-header-left h1 {
+  margin: 0 0 7px;
+  color: #202b40;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.dependent-page .dependent-header-left p {
+  margin: 0;
+  color: #7b8798;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.dependent-page .menuBtn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 1px solid #e3e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #526179;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.dependent-page .menuBtn:hover {
+  background: #eef4ff;
+  color: #1a9a83;
+}
+
+.dependent-page .dependent-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dependent-page .notification-btn,
+.dependent-page .dependent-profile-link {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #45536a;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dependent-page .notification-btn:hover,
+.dependent-page .dependent-profile-link:hover {
+  border-color: #9db4ff;
+  color: #1a9a83;
+}
+
+/* Main content */
+.dependent-page .dependent-content {
+  width: 100%;
+  max-width: 1050px;
+  margin: 28px auto 0;
+  box-sizing: border-box;
+}
+
+.dependent-page .dependent-message {
+  margin: 0 0 18px;
+  padding: 13px 16px;
+  border: 1px solid #cbd8ff;
+  border-radius: 10px;
+  background: #eef3ff;
+  color: #3855a5;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Registration card */
+.dependent-page .dependent-form-section {
+  padding: 28px;
+  border: 1px solid #e7ebf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(31, 48, 80, 0.06);
+}
+
+.dependent-page .dependent-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.dependent-page .dependent-section-heading h2 {
+  margin: 0 0 8px;
+  color: #253047;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.dependent-page .dependent-section-heading p {
+  margin: 0;
+  color: #7b8798;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.dependent-page .dependent-step-count {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4d61c5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Progress steps */
+.dependent-page .dependent-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 32px;
+  width: 100%;
+}
+
+.dependent-page .progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  min-width: 80px;
+  color: #929bad;
+  text-align: center;
+}
+
+.dependent-page .progress-step span {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #dce2ec;
+  border-radius: 50%;
+  background: #fff;
+  color: #8490a3;
+  font-weight: 700;
+}
+
+.dependent-page .progress-step p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dependent-page .progress-step.active {
+  color: #4c62cc;
+}
+
+.dependent-page .progress-step.active span {
+  border-color: #1a9a83;
+  background: #1a9a83;
+  color: #fff;
+}
+
+.dependent-page .progress-line {
+  flex: 1;
+  max-width: 120px;
+  height: 3px;
+  margin-top: -25px;
+  border-radius: 3px;
+  background: #e1e6ef;
+}
+
+.dependent-page .progress-line.active {
+  background: #1a9a83;
+}
+
+/* Form fields */
+.dependent-page .dependent-step-content h3 {
+  margin: 0 0 22px;
+  color: #29364c;
+  font-size: 18px;
+}
+
+.dependent-page .dependent-step-content > p {
+  margin: 0 0 20px;
+  color: #7b8798;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.dependent-page .dependent-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.dependent-page .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  gap: 8px;
+}
+
+.dependent-page .form-group label {
+  color: #39465c;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.dependent-page .form-group input,
+.dependent-page .form-group select,
+.dependent-page .form-group textarea {
+  width: 100%;
+  min-height: 45px;
+  padding: 11px 13px;
+  box-sizing: border-box;
+  border: 1px solid #dce3ed;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #29364c;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dependent-page .form-group textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.dependent-page .form-group input:focus,
+.dependent-page .form-group select:focus,
+.dependent-page .form-group textarea:focus {
+  border-color: #667de0;
+  box-shadow: 0 0 0 3px rgba(82, 105, 213, 0.12);
+}
+
+.dependent-page .form-group input::placeholder,
+.dependent-page .form-group textarea::placeholder {
+  color: #a0aaba;
+}
+
+.dependent-page .field-error {
+  display: block;
+  color: #dc3545;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dependent-page [aria-invalid="true"] {
+  border-color: #dc3545 !important;
+}
+
+/* Navigation buttons */
+.dependent-page .dependent-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.dependent-page .dependent-next-btn,
+.dependent-page .dependent-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dependent-page .dependent-next-btn {
+  background: #1a9a83;
+  color: #fff;
+}
+
+.dependent-page .dependent-next-btn:hover {
+  background: #4056bf;
+  transform: translateY(-1px);
+}
+
+.dependent-page .dependent-back-btn {
+  border-color: #dce3ed;
+  background: #fff;
+  color: #4b5870;
+}
+
+.dependent-page .dependent-back-btn:hover {
+  background: #f3f5fa;
+}
+
+/* Care plan cards */
+.dependent-page .dependent-plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dependent-page .plan-card {
+  position: relative;
+  min-width: 0;
+  padding: 22px 18px;
+  border: 1px solid #dfe5ef;
+  border-radius: 12px;
+  background: #fff;
+  color: #344158;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.dependent-page .plan-card:hover,
+.dependent-page .plan-card.selected {
+  border-color: #657bdf;
+  background: #f6f7ff;
+  box-shadow: 0 5px 16px rgba(82, 105, 213, 0.1);
+}
+
+.dependent-page .plan-card h4 {
+  margin: 14px 0 8px;
+  font-size: 16px;
+}
+
+.dependent-page .plan-card p {
+  margin: 0;
+  color: #78859a;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.dependent-page .plan-radio {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd4e2;
+  border-radius: 50%;
+  color: #fff;
+}
+
+.dependent-page .plan-card.selected .plan-radio {
+  border-color: #1a9a83;
+  background: #1a9a83;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dependent-page {
+    width: calc(100% - 75px);
+    margin-left: 75px;
+    padding: 0 18px 30px;
+  }
+
+  .dependent-page .dependent-form-section {
+    padding: 22px;
+  }
+
+  .dependent-page .dependent-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .dependent-page,
+  .dependent-page.sidebar-closed {
+    width: 100%;
+    margin-left: 0;
+    padding: 0 14px 24px;
+  }
+
+  .dependent-page .dependent-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dependent-page .dependent-header-left h1 {
+    font-size: 22px;
+  }
+
+  .dependent-page .dependent-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .dependent-page .dependent-form-section {
+    padding: 18px 14px;
+  }
+
+  .dependent-page .dependent-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dependent-page .dependent-section-heading h2 {
+    font-size: 19px;
+  }
+
+  .dependent-page .dependent-progress {
+    gap: 5px;
+  }
+
+  .dependent-page .progress-step {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .dependent-page .progress-step p {
+    font-size: 10px;
+  }
+
+  .dependent-page .progress-step span {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dependent-page .progress-line {
+    margin-top: -22px;
+  }
+
+  .dependent-page .dependent-form-grid,
+  .dependent-page .dependent-plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dependent-page .dependent-form-actions {
+    justify-content: stretch;
+  }
+
+  .dependent-page .dependent-form-actions button {
+    flex: 1;
+  }
+}
+
+
+
+/* =========================================================
+   MY PATIENT HUB — UNIFIED TEAL THEME
+   Shared accent palette based on the requested gradient.
+   ========================================================= */
+:root {
+  --mph-teal-dark: #123e4d;
+  --mph-teal: #126e70;
+  --mph-green: #1a9a83;
+  --mph-teal-gradient: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
+  --mph-teal-soft: #eaf6f3;
+}
+
+/* Replace remaining common purple accents in interactive states. */
+.page-title a,
+.doctor-details h4,
+.find-clinic .clinic-top .page-title a,
+.find-clinic .clinic-action a,
+.find-clinic .clinic-show-map,
+.find-clinic .clinic-map-heading button,
+.help {
+  color: var(--mph-teal);
+}
+
+.menu-btn:hover,
+.header-icon:hover,
+.doctor-filter .view-button button.active,
+.view-button button.active,
+.view-button button.sctive,
+.sort-area button,
+.sort-area .sort-active,
+.find-clinic .view-button button.active,
+.find-clinic .clinic-action a,
+.find-clinic .clinic-show-map,
+.find-clinic .clinic-map-heading button,
+.search-area button,
+.find-clinic .search-area button {
+  background: var(--mph-teal-gradient);
+  color: #fff;
+}
+
+.sidebar > a:hover,
+.find-clinic .clinic-show-map,
+.find-clinic .clinic-map-heading button,
+.help {
+  background-color: var(--mph-teal-soft);
+}
+
+.sidebar > a.active {
+  background: var(--mph-teal-gradient);
+  box-shadow: 0 5px 15px rgba(18, 110, 112, 0.25);
+  color: #fff;
+}
+
+.help span {
+  background: var(--mph-teal-gradient);
+  color: #fff;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline-color: var(--mph-green);
+}
+
+
+/* =========================================================
+   FINAL THEME FIX — DOCTOR + PHARMACY
+   Keeps the existing layout and applies the same teal/green
+   palette used by Dashboard and Clinic.
+   ========================================================= */
+:root {
+  --mph-teal-dark: #123e4d;
+  --mph-teal: #126e70;
+  --mph-green: #1a9a83;
+  --mph-teal-gradient: linear-gradient(115deg, #123e4d, #126e70 62%, #1a9a83);
+  --mph-teal-soft: #eaf6f3;
+}
+
+/* DOCTOR page */
+.find-doctor .doctor-banner {
+  background: var(--mph-teal-gradient) !important;
+  color: #fff !important;
+}
+.find-doctor .doctor-banner .page-title,
+.find-doctor .doctor-banner .page-title h3,
+.find-doctor .doctor-banner .page-title small,
+.find-doctor .doctor-banner .page-title a,
+.find-doctor .doctor-banner .doctor-hero-copy h1,
+.find-doctor .doctor-banner .doctor-hero-copy p,
+.find-doctor .doctor-banner .doctor-hero-copy > span {
+  color: #fff !important;
+}
+.find-doctor .doctor-banner .doctor-hero-copy p { color: #d9f4ed !important; }
+.find-doctor .doctor-banner .doctor-hero-copy > span { color: #a8f0dc !important; }
+.find-doctor .doctor-banner .doctor-cart-link {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.35) !important;
+  color: #fff !important;
+}
+.find-doctor .search-area > button,
+.find-doctor .doctor-book-button,
+.find-doctor .doctor-filter .doctor-view-toggle.active,
+.find-doctor .doctor-filter button.active {
+  background: var(--mph-teal-gradient) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+.find-doctor .search-area > button:hover,
+.find-doctor .doctor-book-button:hover { background: #0d806e !important; }
+.find-doctor .doctor-verified,
+.find-doctor .doctor-details h4,
+.find-doctor .doctor-card-modern .doctor-details p i,
+.find-doctor .doctor-fee b,
+.find-doctor .doctor-no-results > i,
+.find-doctor .doctor-no-results button,
+.find-doctor .doctor-map-panel a,
+.find-doctor .doctor-modal-eyebrow {
+  color: var(--mph-teal) !important;
+}
+.find-doctor .doctor-filter,
+.find-doctor .doctor-help-card {
+  border-color: #d6ebe5 !important;
+}
+.find-doctor .doctor-filter-title span,
+.find-doctor .doctor-location-note i,
+.find-doctor .doctor-help-card > i {
+  color: var(--mph-green) !important;
+}
+.find-doctor .doctor-filter .doctor-view-toggle.active,
+.find-doctor .doctor-filter button.active {
+  box-shadow: 0 5px 15px rgba(18,110,112,.18) !important;
+}
+.find-doctor input:focus,
+.find-doctor select:focus,
+.find-doctor textarea:focus {
+  border-color: var(--mph-green) !important;
+  box-shadow: 0 0 0 3px rgba(26,154,131,.12) !important;
+}
+.find-doctor .doctor-map-pin { background: var(--mph-teal-soft) !important; color: var(--mph-teal) !important; }
+
+/* PHARMACY page — current catalog layout */
+.catalog-page .pharmacy-hero {
+  background: var(--mph-teal-gradient) !important;
+}
+.catalog-page .pharmacy-hero .catalog-hero-art span { color: var(--mph-teal) !important; }
+.catalog-page .catalog-breadcrumb a,
+.catalog-page .catalog-section-title > div > span,
+.catalog-page .catalog-store,
+.catalog-page .catalog-product-bottom > strong,
+.catalog-page .catalog-no-results > i,
+.catalog-page .catalog-no-results button,
+.catalog-page .catalog-demo-note i {
+  color: var(--mph-teal) !important;
+}
+.catalog-page .catalog-categories button.active {
+  border-color: var(--mph-green) !important;
+  background: var(--mph-teal-soft) !important;
+  color: var(--mph-teal) !important;
+}
+.catalog-page .catalog-product-bottom button {
+  background: var(--mph-teal-gradient) !important;
+  color: #fff !important;
+}
+.catalog-page .catalog-product-bottom button:hover { background: #0d806e !important; }
+.catalog-page .catalog-search:focus-within { border-color: var(--mph-green) !important; box-shadow: 0 0 0 3px rgba(26,154,131,.10) !important; }
+
+/* PHARMACY legacy classes, if any are still used in the running app */
+.pharmacy-page .pharmacy-category strong,
+.pharmacy-page .pharmacy-card h3 i,
+.pharmacy-page .pharmacy-table .active,
+.pharmacy-page .pharmacy-header .bread a,
+.pharmacy-page .pharmacy-header .menu-btn:hover {
+  color: var(--mph-teal) !important;
+}
+.pharmacy-page .pharmacy-container,
+.pharmacy-page .pharmacy-card,
+.pharmacy-page .pharmacy-table {
+  border-color: #dcebe7;
+}
+.pharmacy-page .pharmacy-search:focus-within,
+.pharmacy-page input:focus,
+.pharmacy-page select:focus {
+  border-color: var(--mph-green) !important;
+  box-shadow: 0 0 0 3px rgba(26,154,131,.12) !important;
+}
+.pharmacy-page .pharmacy-card button,
+.pharmacy-page .pharmacy-table button,
+.pharmacy-page .pharmacy-submit,
+.pharmacy-page .primary-btn {
+  background: var(--mph-teal-gradient) !important;
+  color: #fff !important;
+  border-color: transparent !important;
 }

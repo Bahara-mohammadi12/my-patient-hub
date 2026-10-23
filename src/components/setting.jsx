@@ -351,74 +351,9 @@ function Setting({ isClosed, setIsClosed }) {
         isClosed ? "setting-sidebar-closed" : ""
       }`}
     >
-      {/* TOP HEADER */}
-      <header className="setting-top-header">
-        <div className="setting-header-left">
-          <div className="setting-breadcrumb">
-            <Link to="/">Home</Link>
-            <i className="fa-solid fa-chevron-right"></i>
-            <span>Account Setting</span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="setting-menu-button"
-          onClick={() => setIsClosed((previous) => !previous)}
-          aria-label="Toggle sidebar"
-        >
-          <i className="fa-solid fa-bars"></i>
-        </button>
-
-        <div className="setting-header-right">
-          <label className="setting-search">
-            <i className="fa-solid fa-magnifying-glass"></i>
-            <input
-              type="search"
-              value={headerSearch}
-              onChange={(event) => setHeaderSearch(event.target.value)}
-              placeholder="Search sessions..."
-              aria-label="Search sessions"
-            />
-          </label>
-
-          <button
-            type="button"
-            className="setting-logout"
-            onClick={() => {
-              signOut();
-              navigate("/login", { replace: true });
-            }}
-          >
-            <i className="fa-solid fa-circle-user"></i>
-            <span>Log out</span>
-          </button>
-
-          <button
-            type="button"
-            className="setting-header-icon"
-            onClick={() => navigateTo("basic-info")}
-            aria-label="Basic information"
-            title="Basic information"
-          >
-            <i className="fa-solid fa-gear"></i>
-          </button>
-
-          <button
-            type="button"
-            className="setting-header-icon"
-            onClick={() =>
-              window.alert(
-                profileMessage || securityMessage || "You are all caught up."
-              )
-            }
-            aria-label="Notifications"
-            title="Notifications"
-          >
-            <i className="fa-solid fa-bell"></i>
-          </button>
-        </div>
-      </header>
+      
+       
+          
 
       <div className="setting-content">
         <div className="setting-layout">

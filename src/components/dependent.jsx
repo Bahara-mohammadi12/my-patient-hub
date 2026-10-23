@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import "./dependent.css";
 
 const emptyDependent = {
   firstName: "",
@@ -253,41 +251,8 @@ function Dependent({ isClosed, setIsClosed }) {
         isClosed ? "sidebar-closed" : ""
       }`}
     >
-      <header className="dependent-header">
-        <div className="dependent-header-left">
-          <button
-            type="button"
-            className="menuBtn"
-            onClick={() => setIsClosed((previous) => !previous)}
-            aria-label="Toggle sidebar"
-          >
-            <i className="fa-solid fa-bars" />
-          </button>
-
-          <div>
-            <h1>My Dependents</h1>
-            <p>Manage your family members and their health records.</p>
-          </div>
-        </div>
-
-        <div className="dependent-header-actions">
-          <button
-            type="button"
-            className="notification-btn"
-            aria-label="Notifications"
-            onClick={() =>
-              setMessage("You are all caught up on notifications.")
-            }
-          >
-            <i className="fa-regular fa-bell" />
-          </button>
-
-          <Link to="/setting" className="dependent-profile-link">
-            <i className="fa-regular fa-user" />
-            <span>My Profile</span>
-          </Link>
-        </div>
-      </header>
+      
+          
 
       <main className="dependent-content">
         {message && (

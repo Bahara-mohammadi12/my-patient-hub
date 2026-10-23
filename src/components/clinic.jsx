@@ -9,7 +9,6 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./clinic.css";
 
 // Fix Leaflet marker icons in Vite
 delete L.Icon.Default.prototype._getIconUrl;
